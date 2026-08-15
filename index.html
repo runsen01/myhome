@@ -82,8 +82,8 @@
             var dateElem = document.getElementById('clk-date');
             
             if (hrElem && minElem && dateElem) {
-                // 檢查是否距離上一次更新已經超過 3000 毫秒（3秒），或者是第一次載入
-                if (!lastUpdateTime || timestamp - lastUpdateTime >= 3000) {
+                // 檢查是否距離上一次更新已經超過 5000 毫秒（5秒），或者是第一次載入
+                if (!lastUpdateTime || timestamp - lastUpdateTime >= 5000) {
                     var d = new Date();
                     hrElem.innerText = String(d.getHours()).padStart(2, '0');
                     minElem.innerText = String(d.getMinutes()).padStart(2, '0');
