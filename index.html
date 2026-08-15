@@ -73,7 +73,7 @@
     </style>
     
     <!-- 智慧省電時鐘核心腳本 -->
-    <script>
+    <script type="text/javascript" nonce="b0cc7132434f43bea41caef560f" src="//local.adguard.org?ts=1786803038573&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_00000000950882099dc80d75a16f4ba3%26ts%3D496334%26p%3Dfs%26cid%3D1%26sig%3D0df0062f1cdc27658f93fd229e141efe2d6308edab9b3a553f6bc6a303842269%26v%3D0&amp;app=chrome.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-dnt"></script><script type="text/javascript" nonce="b0cc7132434f43bea41caef560f" src="//local.adguard.org?ts=1786803038573&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script><script>
         var lastUpdateTime = 0;
 
         function runSmartClock(timestamp) {
@@ -97,6 +97,106 @@
             // 核心智慧省電：當分頁隱藏時，瀏覽器會自動暫停此處循環，達成 0% 背景消耗
             requestAnimationFrame(runSmartClock);
         }
+
+
+        // ============================================================
+        // 自動天氣：苗栗縣頭份市 / Open-Meteo
+        // 網頁每次開啟時抓取一次，不做背景循環更新
+        // ============================================================
+        const WEATHER_LAT = 24.6908;
+        const WEATHER_LON = 120.9076;
+
+        const weatherWeekNames = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
+
+        function weatherDateText(dateString) {
+            const d = new Date(dateString + "T00:00:00");
+            return (d.getMonth() + 1) + "/" + d.getDate();
+        }
+
+        function weatherWeekText(dateString) {
+            const d = new Date(dateString + "T00:00:00");
+            return weatherWeekNames[d.getDay()];
+        }
+
+        async function updateWeather() {
+            const url =
+                "https://api.open-meteo.com/v1/forecast" +
+                "?latitude=" + WEATHER_LAT +
+                "&longitude=" + WEATHER_LON +
+                "&daily=precipitation_probability_max,temperature_2m_min,temperature_2m_max" +
+                "&timezone=Asia%2FTaipei" +
+                "&forecast_days=7";
+
+            try {
+                const response = await fetch(url, { cache: "no-store" });
+
+                if (!response.ok) {
+                    throw new Error("Weather API HTTP " + response.status);
+                }
+
+                const data = await response.json();
+
+                if (!data.daily || !data.daily.time) {
+                    throw new Error("Weather data format error");
+                }
+
+                const dateRow = document.getElementById("weather-date");
+                const weekRow = document.getElementById("weather-week");
+                const rainRow = document.getElementById("weather-rain");
+                const tempRow = document.getElementById("weather-temp");
+
+                dateRow.innerHTML = "<td>日期</td>";
+                weekRow.innerHTML = "<td>周</td>";
+                rainRow.innerHTML = "<td>降雨</td>";
+                tempRow.innerHTML = "<td>氣溫</td>";
+
+                for (let i = 0; i < 7; i++) {
+                    const date = data.daily.time[i];
+                    const rain = data.daily.precipitation_probability_max[i];
+                    const minTemp = data.daily.temperature_2m_min[i];
+                    const maxTemp = data.daily.temperature_2m_max[i];
+
+                    const dateCell = document.createElement("td");
+                    dateCell.textContent = weatherDateText(date);
+
+                    const weekCell = document.createElement("td");
+                    weekCell.textContent = weatherWeekText(date);
+
+                    const rainCell = document.createElement("td");
+                    rainCell.className = "text-rain";
+                    rainCell.textContent =
+                        (rain === null || rain === undefined ? "--" : rain + "%");
+
+                    const tempCell = document.createElement("td");
+                    tempCell.className = "text-temp";
+                    tempCell.textContent =
+                        (minTemp === null || minTemp === undefined ? "--" : Math.round(minTemp)) +
+                        "°-" +
+                        (maxTemp === null || maxTemp === undefined ? "--" : Math.round(maxTemp)) +
+                        "°";
+
+                    dateRow.appendChild(dateCell);
+                    weekRow.appendChild(weekCell);
+                    rainRow.appendChild(rainCell);
+                    tempRow.appendChild(tempCell);
+                }
+
+                console.log("天氣更新成功：" + new Date().toLocaleString("zh-TW"));
+            } catch (error) {
+                console.error("天氣更新失敗：", error);
+
+                const rainRow = document.getElementById("weather-rain");
+                const tempRow = document.getElementById("weather-temp");
+
+                rainRow.innerHTML =
+                    '<td>降雨</td><td colspan="7" class="text-rain">暫時無法取得</td>';
+                tempRow.innerHTML =
+                    '<td>氣溫</td><td colspan="7" class="text-temp">請檢查網路</td>';
+            }
+        }
+
+        // 只在網頁開啟時抓取一次天氣
+        updateWeather();
 
         // 啟動智慧時鐘鏈
         requestAnimationFrame(runSmartClock);
@@ -122,11 +222,11 @@
             <!-- 右側：位置與左右極致縮排氣象表 -->
             <div class="weather-section">
                 <div class="weather-title">苗栗縣頭份市 // 天氣預報</div>
-                <table class="weather-table">
-                    <tr><td>日期</td><td>8/15</td><td>8/16</td><td>8/17</td><td>8/18</td><td>8/19</td><td>8/20</td><td>8/21</td></tr>
-                    <tr><td>周</td><td>週六</td><td>週日</td><td>週一</td><td>週二</td><td>週三</td><td>週四</td><td>週五</td></tr>
-                    <tr><td>降雨</td><td class="text-rain">72%</td><td class="text-rain">95%</td><td class="text-rain">85%</td><td class="text-rain">74%</td><td class="text-rain">83%</td><td class="text-rain">93%</td><td class="text-rain">93%</td></tr>
-                    <tr><td>氣溫</td><td class="text-temp">28°-37°</td><td class="text-temp">28°-37°</td><td class="text-temp">28°-37°</td><td class="text-temp">28°-37°</td><td class="text-temp">28°-37°</td><td class="text-temp">28°-37°</td><td class="text-temp">28°-37°</td></tr>
+                <table class="weather-table" id="weather-table">
+                    <tr id="weather-date"><td>日期</td><td colspan="7">讀取中...</td></tr>
+                    <tr id="weather-week"><td>周</td><td colspan="7">讀取中...</td></tr>
+                    <tr id="weather-rain"><td>降雨</td><td colspan="7" class="text-rain">讀取中...</td></tr>
+                    <tr id="weather-temp"><td>氣溫</td><td colspan="7" class="text-temp">讀取中...</td></tr>
                 </table>
             </div>
         </div>
