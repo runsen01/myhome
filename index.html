@@ -4,203 +4,555 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTC Sense 3.0 // 終極戰情控制台</title>
+
+    <!-- 導入翻頁鐘專用高瘦字體 Bebas Neue -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
     <style>
-        :root { 
-            --bg-color: #030408; 
-            --neon-cyan: #00f3ff; 
-            --neon-pink: #ff0055; 
-            --text-main: #f1f5f9; 
-            --text-dim: #64748b; 
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--bg-color); color: var(--text-main); font-family: "Segoe UI", -apple-system, "Microsoft JhengHei", sans-serif; padding: 16px; min-height: 100vh; }
-        
-        /* === 核心寬度控制：固定 900px，確保上下右側邊界完美一絲不差切齊 === */
-        .container { width: 900px; margin: 0 auto; text-align: left; }
-        
-        /* === 頂部控制台 === */
-        .dashboard-wrapper { width: 100%; text-align: left; margin-bottom: 20px; }
-        .htc-dashboard { 
-            display: flex; 
-            width: 100%;
-            align-items: center; 
-            background: linear-gradient(180deg, #131625 0%, #07080f 100%); 
-            border: 2px solid var(--neon-cyan); 
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); 
-            border-radius: 16px; 
-            padding: 18px 24px; 
-            justify-content: space-between;
-        }
-        
-        /* 左側時鐘 */
-        .clock-section { display: flex; flex-direction: column; align-items: flex-start; flex-shrink: 0; margin-right: 16px; /* 剛好隔開一個全形字(16px)的寬度 */ }
-        .htc-clock { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-        .flip-card { background: linear-gradient(180deg, #222638 0%, #000 50%, #151724 100%); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 10px 18px; font-family: "Courier New", Courier, monospace; font-size: 4.5rem; font-weight: 900; color: #fff; text-shadow: 0 0 12px var(--neon-cyan); min-width: 115px; text-align: center; box-shadow: 0 6px 12px rgba(0,0,0,0.5); }
-        .flip-colon { font-family: "Courier New", Courier, monospace; font-size: 3.8rem; color: var(--neon-cyan); animation: blink 1s infinite; text-shadow: 0 0 10px var(--neon-cyan); }
-        @keyframes blink { 50% { opacity: 0.2; } }
-        .htc-date { font-size: 1.15rem; color: var(--neon-cyan); font-weight: 700; text-shadow: 0 0 5px rgba(0, 243, 255, 0.4); padding-left: 2px; }
+:root { 
+    --bg-color: #020509; 
+    --neon-cyan: #00f3ff; 
+    --neon-pink: #ff0055; 
+    --neon-purple: #a855f7;
+    --text-main: #f1f5f9; 
+    --text-dim: #64748b; 
+}
 
-        /* 右側氣象 */
-        .weather-section { width: 560px; display: flex; flex-direction: column; align-items: flex-start; flex-shrink: 0; }
-        .weather-title { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 8px; letter-spacing: 0.5px; }
-        .weather-table { width: 100%; border-collapse: collapse; background: rgba(0, 0, 0, 0.4); font-size: 0.82rem; text-align: center; }
-        .weather-table td { border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 2px; color: #fff; }
-        .weather-table td:first-child { font-weight: 700; color: var(--text-dim); text-align: left; padding-left: 8px; width: 68px; background: rgba(255, 255, 255, 0.02); }
-        
-        /* 降雨淡藍、氣溫紅色經典配置 */
-        .text-rain { color: #00f3ff !important; font-weight: 700; text-shadow: 0 0 5px rgba(0, 243, 255, 0.3); }
-        .text-temp { color: #ff0055 !important; font-weight: 700; text-shadow: 0 0 5px rgba(255, 0, 85, 0.3); }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        /* === 網頁連結：自動排版切齊右側框線 === */
-        .section-title { font-size: 0.95rem; font-weight: 700; color: var(--neon-cyan); margin: 24px 0 8px 4px; border-left: 3px solid var(--neon-pink); padding-left: 8px; }
-        .grid-links { display: grid; grid-template-columns: repeat(auto-fill, minmax(122px, 1fr)); gap: 5px; width: 100%; }
-        
-        .card-link { border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 6px; padding: 8px 2px; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #fff; transition: all 0.15s ease; text-align: center; min-height: 42px; }
-        .card-link .title { font-weight: 700; font-size: 1.2rem; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+body {
+    background:
+        radial-gradient(circle at 50% 0%, rgba(0,243,255,0.035), transparent 45%),
+        linear-gradient(180deg, #03070b 0%, #010205 100%);
+    color: var(--text-main);
+    font-family: "Segoe UI", -apple-system, "Microsoft JhengHei", sans-serif;
+    padding: 16px;
+    min-height: 100vh;
+}
 
-        /* === 類別彩色底色風格 === */
-        .lan-box { background: rgba(16, 42, 33, 0.85); }
-        .lan-box:hover { border-color: #00ffaa; background: rgba(0, 255, 170, 0.15); box-shadow: 0 0 10px rgba(0, 255, 170, 0.25); }
-        
-        .core-box { background: rgba(30, 18, 48, 0.85); }
-        .core-box:hover { border-color: #b055ff; background: rgba(176, 85, 255, 0.15); box-shadow: 0 0 10px rgba(176, 85, 255, 0.25); }
-        
-        .news-box { background: rgba(46, 16, 26, 0.85); }
-        .news-box:hover { border-color: var(--neon-pink); background: rgba(255, 0, 85, 0.15); box-shadow: 0 0 10px rgba(255, 0, 85, 0.25); }
-        
-        .life-box { background: rgba(20, 28, 43, 0.85); }
-        .life-box:hover { border-color: var(--neon-cyan); background: rgba(0, 243, 255, 0.15); box-shadow: 0 0 10px rgba(0, 243, 255, 0.25); }
+/* =========================================================
+   主容器
+   ========================================================= */
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+
+/* =========================================================
+   頂部控制台
+   ========================================================= */
+
+.dashboard-wrapper {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.htc-dashboard {
+    display: flex;
+    width: 100%;
+    align-items: center;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(23,29,40,0.96) 0%,
+            rgba(7,10,15,0.98) 48%,
+            rgba(2,4,7,1) 100%
+        );
+
+    border: 2px solid var(--neon-cyan);
+
+    box-shadow:
+        0 0 5px rgba(0,243,255,0.35),
+        0 0 20px rgba(0,243,255,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        inset 0 -12px 25px rgba(0,0,0,0.45);
+
+    border-radius: 15px;
+    padding: 18px 24px;
+    justify-content: space-between;
+
+    position: relative;
+    overflow: hidden;
+}
+
+/* 頂部玻璃反光 */
+.htc-dashboard::before {
+    content: "";
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    top: 2px;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.25),
+        transparent
+    );
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   時鐘區
+   ========================================================= */
+
+.clock-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 0 0 270px;
+    margin-right: 0;
+}
+
+.htc-clock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+
+/* 外殼 */
+.flip-clock-unit {
+    position: relative;
+    width: 112px;
+    height: 108px;
+    perspective: 700px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #252932 0%,
+            #0a0c10 25%,
+            #020305 65%,
+            #16191f 100%
+        );
+
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.20);
+
+    box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.28),
+        inset 0 -2px 4px rgba(0,0,0,0.95),
+        0 2px 3px rgba(0,0,0,0.8),
+        0 7px 14px rgba(0,0,0,0.65);
+
+    overflow: hidden;
+}
+
+.flip-clock-unit::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 11px;
+    border: 1px solid rgba(255,255,255,0.055);
+    pointer-events: none;
+    z-index: 100;
+}
+
+.flip-clock-unit::before {
+    content: "";
+    position: absolute;
+    z-index: 99;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 3px;
+    margin-top: -1.5px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,0.95),
+            rgba(0,0,0,0.75),
+            rgba(255,255,255,0.08)
+        );
+
+    box-shadow:
+        0 1px 2px rgba(0,0,0,0.9),
+        0 -1px 1px rgba(255,255,255,0.06);
+}
+
+
+/* 翻頁卡片 */
+.flip-card {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
+
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 6.2rem;
+    font-weight: normal;
+    letter-spacing: -2px;
+    color: #f5f5f5;
+
+    text-shadow:
+        0 1px 0 #ffffff,
+        0 2px 4px rgba(0,0,0,0.9),
+        0 0 8px rgba(255,255,255,0.12);
+
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.flip-card .num-wrapper {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 108px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: -2px;
+    transform: scaleX(0.82) scaleY(1.05);
+}
+
+.flip-card.top {
+    top: 0;
+    background: linear-gradient(180deg, #30343d 0%, #1c1f25 30%, #080a0e 100%);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.14), inset 0 -3px 5px rgba(0,0,0,0.75);
+}
+
+.flip-card.top .num-wrapper { top: 0; }
+
+.flip-card.bottom {
+    top: 50%;
+    background: linear-gradient(180deg, #06080b 0%, #101319 35%, #1c1f25 100%);
+    box-shadow: inset 0 3px 5px rgba(0,0,0,0.85), inset 0 -1px 1px rgba(255,255,255,0.08);
+}
+
+.flip-card.bottom .num-wrapper { bottom: 0; }
+
+.flip-card.next-bottom {
+    top: 50%;
+    transform-origin: center top;
+    transform: rotateX(180deg);
+    z-index: 3;
+}
+
+.flip-card.current-top {
+    transform-origin: center bottom;
+    z-index: 4;
+}
+
+.flip-clock-unit.flipping .next-bottom { animation: flipDown 0.55s cubic-bezier(.37,.01,.25,1) forwards; }
+.flip-clock-unit.flipping .current-top { animation: flipUp 0.55s cubic-bezier(.37,.01,.25,1) forwards; }
+
+@keyframes flipDown {
+    0% { transform: rotateX(180deg); box-shadow: 0 -5px 10px rgba(0,0,0,0.9); }
+    50% { box-shadow: 0 8px 15px rgba(0,0,0,0.85); }
+    100% { transform: rotateX(0deg); box-shadow: none; }
+}
+
+@keyframes flipUp {
+    0% { transform: rotateX(0deg); }
+    50% { transform: rotateX(-90deg); }
+    100% { transform: rotateX(-180deg); }
+}
+
+.flip-colon {
+    font-family: "Arial Black", Impact, sans-serif;
+    font-size: 3.8rem;
+    font-weight: 900;
+    color: #dce5e8;
+    margin: 0 -2px;
+    text-shadow: 0 1px 2px #000, 0 0 5px rgba(0,243,255,0.35);
+    animation: blink 1s infinite;
+}
+
+@keyframes blink { 50% { opacity: 0.35; } }
+
+.htc-date {
+    font-size: 1.15rem;
+    color: var(--neon-cyan);
+    font-weight: 700;
+    text-shadow: 0 0 5px rgba(0,243,255,0.45), 0 1px 2px #000;
+    padding-left: 2px;
+}
+
+
+/* 天氣 */
+.weather-section {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.weather-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px #000, 0 0 4px rgba(255,255,255,0.12);
+}
+
+.weather-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background: linear-gradient(180deg, rgba(5,8,13,0.88), rgba(0,0,0,0.65));
+    font-size: 0.76rem;
+    text-align: center;
+    box-shadow: inset 0 1px rgba(255,255,255,0.04), 0 2px 5px rgba(0,0,0,0.45);
+}
+
+.weather-table td {
+    border: 1px solid rgba(255,255,255,0.10);
+    padding: 4px 0;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.weather-table td:first-child {
+    font-weight: 700;
+    color: var(--text-dim);
+    text-align: left;
+    padding-left: 4px;
+    width: 42px;
+    background: rgba(255,255,255,0.025);
+}
+
+.text-rain { color: #00f3ff !important; font-weight: 700; text-shadow: 0 0 5px rgba(0,243,255,0.45), 0 1px 1px #000; }
+.text-temp { color: #ff174f !important; font-weight: 700; text-shadow: 0 0 5px rgba(255,0,85,0.45), 0 1px 1px #000; }
+
+
+/* Google 搜尋 */
+.google-search-wrapper {
+    width: 66.67%;
+    margin: 16px auto 20px auto;
+}
+
+.google-search {
+    display: flex;
+    width: 100%;
+    height: 44px;
+    background: rgba(10, 16, 26, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 243, 255, 0.15);
+}
+
+.google-search input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: none;
+    padding: 0 18px;
+    font-size: 0.95rem;
+    color: #f1f5f9;
+    background: transparent;
+}
+
+.google-search input::placeholder { color: #8fa0b5; }
+.google-search input:focus { box-shadow: inset 0 0 0 1px var(--neon-cyan); }
+
+.google-search button {
+    border: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0 18px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--neon-cyan);
+    background: rgba(12, 32, 58, 0.6);
+    backdrop-filter: blur(4px);
+    transition: all 0.25s ease;
+}
+
+.google-search button:hover {
+    background: rgba(0, 243, 255, 0.2);
+    color: #ffffff;
+    box-shadow: inset 0 0 8px rgba(0, 243, 255, 0.4);
+}
+
+.google-search .ai-search-btn {
+    color: #ffffff;
+    background: linear-gradient(135deg, rgba(147, 51, 234, 0.75) 0%, rgba(37, 99, 235, 0.75) 100%);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+
+.google-search .ai-search-btn:hover {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.95) 0%, rgba(59, 130, 246, 0.95) 100%);
+    box-shadow: 0 0 16px rgba(168, 85, 247, 0.8), 0 0 25px rgba(59, 130, 246, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transform: scale(1.02);
+}
+
+
+/* =========================================================
+   區域標題
+   ========================================================= */
+
+.section-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    margin: 24px 0 8px 4px;
+    border-left: 3px solid var(--neon-pink);
+    padding-left: 8px;
+    text-shadow: 0 0 5px rgba(0,243,255,0.25);
+}
+
+
+/* 7 欄按鈕網格 */
+.grid-links {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+}
+
+
+/* =========================================================
+   按鈕通用與色彩漸層樣式
+   ========================================================= */
+
+.card-link {
+    position: relative;
+    border-radius: 8px;
+    padding: 8px 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    text-align: center;
+    min-height: 44px;
+    overflow: hidden;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-link .title {
+    position: relative;
+    z-index: 2;
+    font-weight: 700;
+    font-size: 0.88rem;
+    letter-spacing: 0.5px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 4px;
+}
+
+
+/* 1. 內網服務：青綠漸層與邊框 */
+.lan-box {
+    border: 1px solid #00f3ff;
+    background: linear-gradient(180deg, #0d2a30 0%, #040c10 50%, #081d22 100%);
+    box-shadow: 0 0 6px rgba(0, 243, 255, 0.25), inset 0 0 5px rgba(0, 243, 255, 0.15);
+}
+.lan-box .title { color: #ffffff; text-shadow: 0 0 4px rgba(0, 243, 255, 0.6); }
+.lan-box:hover {
+    background: linear-gradient(180deg, #133f48 0%, #081921 50%, #0d2d35 100%);
+    box-shadow: 0 0 12px rgba(0, 243, 255, 0.6), inset 0 0 10px rgba(0, 243, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+
+/* 2. 常用網站：紫光漸層與邊框 */
+.core-box {
+    border: 1px solid #a855f7;
+    background: linear-gradient(180deg, #231138 0%, #0a0412 50%, #190a2a 100%);
+    box-shadow: 0 0 6px rgba(168, 85, 247, 0.25), inset 0 0 5px rgba(168, 85, 247, 0.15);
+}
+.core-box .title { color: #ffffff; text-shadow: 0 0 4px rgba(168, 85, 247, 0.6); }
+.core-box:hover {
+    background: linear-gradient(180deg, #361a56 0%, #130722 50%, #281042 100%);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.6), inset 0 0 10px rgba(168, 85, 247, 0.3);
+    transform: translateY(-2px);
+}
+
+
+/* 3. 新聞資訊：桃紅/粉紅漸層與邊框 */
+.news-box {
+    border: 1px solid #ff2a70;
+    background: linear-gradient(180deg, #380b1e 0%, #120208 50%, #280614 100%);
+    box-shadow: 0 0 6px rgba(255, 42, 112, 0.25), inset 0 0 5px rgba(255, 42, 112, 0.15);
+}
+.news-box .title { color: #ffffff; text-shadow: 0 0 4px rgba(255, 42, 112, 0.6); }
+.news-box:hover {
+    background: linear-gradient(180deg, #54112e 0%, #1e030e 50%, #3e0920 100%);
+    box-shadow: 0 0 12px rgba(255, 42, 112, 0.6), inset 0 0 10px rgba(255, 42, 112, 0.3);
+    transform: translateY(-2px);
+}
+
+
+/* 4. 生活便利：璀璨金黃漸層與邊框 (黃色調調整為暗金亮邊，不刺眼且高質感) */
+.life-box {
+    border: 1px solid #eab308;
+    background: linear-gradient(180deg, #332405 0%, #0d0901 50%, #241903 100%);
+    box-shadow: 0 0 6px rgba(234, 179, 8, 0.25), inset 0 0 5px rgba(234, 179, 8, 0.15);
+}
+.life-box .title { color: #ffffff; text-shadow: 0 0 4px rgba(234, 179, 8, 0.6); }
+.life-box:hover {
+    background: linear-gradient(180deg, #4d3708 0%, #171002 50%, #382805 100%);
+    box-shadow: 0 0 12px rgba(234, 179, 8, 0.6), inset 0 0 10px rgba(234, 179, 8, 0.3);
+    transform: translateY(-2px);
+}
+
+
+/* 5. 其他：靛藍漸層與邊框 */
+.other-box {
+    border: 1px solid #6366f1;
+    background: linear-gradient(180deg, #141738 0%, #050612 50%, #0e1028 100%);
+    box-shadow: 0 0 6px rgba(99, 102, 241, 0.25), inset 0 0 5px rgba(99, 102, 241, 0.15);
+}
+.other-box .title { color: #ffffff; text-shadow: 0 0 4px rgba(99, 102, 241, 0.6); }
+.other-box:hover {
+    background: linear-gradient(180deg, #202456 0%, #0a0c24 50%, #171a40 100%);
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.6), inset 0 0 10px rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+}
+
+
+/* 手機版響應式 */
+@media (max-width: 760px) {
+    body { padding: 10px; }
+    .htc-dashboard { flex-direction: column; align-items: stretch; padding: 14px; }
+    .clock-section { flex: 0 0 auto; width: 100%; align-items: center; }
+    .htc-clock { justify-content: center; }
+    .weather-section { width: 100%; }
+    .weather-title { align-self: center; }
+    .google-search-wrapper { width: 66.67%; min-width: 240px; }
+    .grid-links { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card-link .title { font-size: 0.82rem; }
+}
+
+@media (max-width: 520px) {
+    .flip-clock-unit { width: 96px; height: 94px; }
+    .flip-card { font-size: 5.4rem; }
+    .flip-card .num-wrapper { height: 94px; }
+    .flip-colon { font-size: 3.2rem; }
+    .weather-table { font-size: 0.68rem; }
+    .weather-table td:first-child { width: 34px; padding-left: 2px; }
+    .google-search-wrapper { width: 85%; min-width: 0; }
+    .google-search button { padding: 0 10px; }
+    .grid-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
     </style>
-    
-    <!-- 智慧省電時鐘核心腳本 -->
-    <script type="text/javascript" nonce="b0cc7132434f43bea41caef560f" src="//local.adguard.org?ts=1786803038573&amp;type=content-script&amp;dmn=chatgpt.com&amp;url=https%3A%2F%2Fchatgpt.com%2Fbackend-api%2Festuary%2Fcontent%3Fid%3Dfile_00000000950882099dc80d75a16f4ba3%26ts%3D496334%26p%3Dfs%26cid%3D1%26sig%3D0df0062f1cdc27658f93fd229e141efe2d6308edab9b3a553f6bc6a303842269%26v%3D0&amp;app=chrome.exe&amp;css=2&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-dnt"></script><script type="text/javascript" nonce="b0cc7132434f43bea41caef560f" src="//local.adguard.org?ts=1786803038573&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script><script>
-        var lastUpdateTime = 0;
-
-        function runSmartClock(timestamp) {
-            var hrElem = document.getElementById('clk-hr');
-            var minElem = document.getElementById('clk-min');
-            var dateElem = document.getElementById('clk-date');
-            
-            if (hrElem && minElem && dateElem) {
-                // 檢查是否距離上一次更新已經超過 5000 毫秒（5秒），或者是第一次載入
-                if (!lastUpdateTime || timestamp - lastUpdateTime >= 5000) {
-                    var d = new Date();
-                    hrElem.innerText = String(d.getHours()).padStart(2, '0');
-                    minElem.innerText = String(d.getMinutes()).padStart(2, '0');
-                    var weeks = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-                    dateElem.innerText = d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日 " + weeks[d.getDay()];
-                    
-                    lastUpdateTime = timestamp; // 紀錄本次更新時間
-                }
-            }
-            
-            // 核心智慧省電：當分頁隱藏時，瀏覽器會自動暫停此處循環，達成 0% 背景消耗
-            requestAnimationFrame(runSmartClock);
-        }
-
-
-        // ============================================================
-        // 自動天氣：苗栗縣頭份市 / Open-Meteo
-        // 網頁每次開啟時抓取一次，不做背景循環更新
-        // ============================================================
-        const WEATHER_LAT = 24.6908;
-        const WEATHER_LON = 120.9076;
-
-        const weatherWeekNames = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
-
-        function weatherDateText(dateString) {
-            const d = new Date(dateString + "T00:00:00");
-            return (d.getMonth() + 1) + "/" + d.getDate();
-        }
-
-        function weatherWeekText(dateString) {
-            const d = new Date(dateString + "T00:00:00");
-            return weatherWeekNames[d.getDay()];
-        }
-
-        async function updateWeather() {
-            const url =
-                "https://api.open-meteo.com/v1/forecast" +
-                "?latitude=" + WEATHER_LAT +
-                "&longitude=" + WEATHER_LON +
-                "&daily=precipitation_probability_max,temperature_2m_min,temperature_2m_max" +
-                "&timezone=Asia%2FTaipei" +
-                "&forecast_days=7";
-
-            try {
-                const response = await fetch(url, { cache: "no-store" });
-
-                if (!response.ok) {
-                    throw new Error("Weather API HTTP " + response.status);
-                }
-
-                const data = await response.json();
-
-                if (!data.daily || !data.daily.time) {
-                    throw new Error("Weather data format error");
-                }
-
-                const dateRow = document.getElementById("weather-date");
-                const weekRow = document.getElementById("weather-week");
-                const rainRow = document.getElementById("weather-rain");
-                const tempRow = document.getElementById("weather-temp");
-
-                dateRow.innerHTML = "<td>日期</td>";
-                weekRow.innerHTML = "<td>周</td>";
-                rainRow.innerHTML = "<td>降雨</td>";
-                tempRow.innerHTML = "<td>氣溫</td>";
-
-                for (let i = 0; i < 7; i++) {
-                    const date = data.daily.time[i];
-                    const rain = data.daily.precipitation_probability_max[i];
-                    const minTemp = data.daily.temperature_2m_min[i];
-                    const maxTemp = data.daily.temperature_2m_max[i];
-
-                    const dateCell = document.createElement("td");
-                    dateCell.textContent = weatherDateText(date);
-
-                    const weekCell = document.createElement("td");
-                    weekCell.textContent = weatherWeekText(date);
-
-                    const rainCell = document.createElement("td");
-                    rainCell.className = "text-rain";
-                    rainCell.textContent =
-                        (rain === null || rain === undefined ? "--" : rain + "%");
-
-                    const tempCell = document.createElement("td");
-                    tempCell.className = "text-temp";
-                    tempCell.textContent =
-                        (minTemp === null || minTemp === undefined ? "--" : Math.round(minTemp)) +
-                        "°-" +
-                        (maxTemp === null || maxTemp === undefined ? "--" : Math.round(maxTemp)) +
-                        "°";
-
-                    dateRow.appendChild(dateCell);
-                    weekRow.appendChild(weekCell);
-                    rainRow.appendChild(rainCell);
-                    tempRow.appendChild(tempCell);
-                }
-
-                console.log("天氣更新成功：" + new Date().toLocaleString("zh-TW"));
-            } catch (error) {
-                console.error("天氣更新失敗：", error);
-
-                const rainRow = document.getElementById("weather-rain");
-                const tempRow = document.getElementById("weather-temp");
-
-                rainRow.innerHTML =
-                    '<td>降雨</td><td colspan="7" class="text-rain">暫時無法取得</td>';
-                tempRow.innerHTML =
-                    '<td>氣溫</td><td colspan="7" class="text-temp">請檢查網路</td>';
-            }
-        }
-
-        // 只在網頁開啟時抓取一次天氣
-        updateWeather();
-
-        // 啟動智慧時鐘鏈
-        requestAnimationFrame(runSmartClock);
-    </script>
 </head>
 <body>
 
@@ -212,14 +564,14 @@
             <!-- 左側：時間與日期 -->
             <div class="clock-section">
                 <div class="htc-clock">
-                    <div class="flip-card" id="clk-hr">--</div>
+                    <div class="flip-clock-unit" id="clk-hr"></div>
                     <div class="flip-colon">:</div>
-                    <div class="flip-card" id="clk-min">--</div>
+                    <div class="flip-clock-unit" id="clk-min"></div>
                 </div>
                 <div class="htc-date" id="clk-date">讀取中...</div>
             </div>
 
-            <!-- 右側：位置與左右極致縮排氣象表 -->
+            <!-- 右側：位置與氣象表 -->
             <div class="weather-section">
                 <div class="weather-title">苗栗縣頭份市 // 天氣預報</div>
                 <table class="weather-table" id="weather-table">
@@ -232,15 +584,20 @@
         </div>
     </div>
 
-    <!-- 1. 內網服務 (綠色系) -->
+    <!-- Google 搜尋列 -->
+    <div class="google-search-wrapper">
+        <form class="google-search" action="https://www.google.com/search" method="get" target="_blank">
+            <input id="google-search-input" type="search" name="q" placeholder="Google 搜尋" autocomplete="off">
+            <button type="submit" title="一般 Google 搜尋">🔍 搜尋</button>
+            <button type="button" class="ai-search-btn" id="google-ai-search" title="Google AI 模式搜尋">✦ AI 搜尋</button>
+        </form>
+    </div>
+
+    <!-- 1. 內網服務 -->
     <div class="section-title">內網服務</div>
     <div class="grid-links">
         <a href="http://192.168.31.19" class="card-link lan-box" target="_blank"><div class="title">CasaOS</div></a>
         <a href="http://192.168.31.19:3000" class="card-link lan-box" target="_blank"><div class="title">Homepage</div></a>
-        <a href="" class="card-link lan-box" target="_blank"><div class="title"></div></a>		
-        <a href="" class="card-link lan-box" target="_blank"><div class="title"></div></a>	
-        <a href="" class="card-link lan-box" target="_blank"><div class="title"></div></a>	
-        <a href="" class="card-link lan-box" target="_blank"><div class="title"></div></a>	
         <a href="http://192.168.50.1" class="card-link lan-box" target="_blank"><div class="title">RT-AC86U</div></a>	
         <a href="http://192.168.31.1" class="card-link lan-box" target="_blank"><div class="title">BE7000路由</div></a>
         <a href="http://192.168.31.1:9001" class="card-link lan-box" target="_blank"><div class="title">Docker管理</div></a>
@@ -249,39 +606,201 @@
         <a href="http://192.168.31.1:8081" class="card-link lan-box" target="_blank"><div class="title">m3u8-lite</div></a>
     </div>
 
-    <!-- 2. 核心門戶 (紫色系) -->
+    <!-- 2. 常用網站 -->
     <div class="section-title">常用網站</div>
     <div class="grid-links">
-        <a href="https://yahoo.com" class="card-link core-box" target="_blank"><div class="title">Yahoo</div></a>
         <a href="https://google.com" class="card-link core-box" target="_blank"><div class="title">Google</div></a>
-        <a href="https://mobile01.com" class="card-link core-box" target="_blank"><div class="title">Mobile01</div></a>
-        <a href="https://chatgpt.com/zh-TW/" class="card-link core-box" target="_blank"><div class="title">Chatgpt</div></a>		
+        <a href="https://chatgpt.com/zh-TW/" class="card-link core-box" target="_blank"><div class="title">ChatGPT</div></a>		
         <a href="https://gemini.google.com/app?hl=zh-TW" class="card-link core-box" target="_blank"><div class="title">Gemini</div></a>	
-        <a href="https://mail.google.com/" class="card-link core-box" target="_blank"><div class="title">Gmail</div></a>
-        <a href="https://drive.google.com/" class="card-link core-box" target="_blank"><div class="title">GDriver</div></a>
-        <a href="https://www.youtube.com/?app=desktop&hl=zh-tw" class="card-link core-box" target="_blank"><div class="title">YOUTUBE</div></a>	
-        <a href="https://apk.tw" class="card-link core-box" target="_blank"><div class="title">APK.TW</div></a>
-        <a href="https://www.tekqart.com/forum.php" class="card-link core-box" target="_blank"><div class="title">品技91TVG</div></a>	
-        <a href="https://www.gamer520.com/" class="card-link core-box" target="_blank"><div class="title">SWITCH520</div></a>
-        <a href="https://www.znds.com/" class="card-link core-box" target="_blank"><div class="title">ZNDS電視盒</div></a>		
-        <a href="https://www.10000txt.com/" class="card-link core-box" target="_blank"><div class="title">萬本小說</div></a>			
-        <a href="https://www01.eyny.com/" class="card-link core-box" target="_blank"><div class="title">伊莉</div></a>
+        <a href="https://mobile01.com" class="card-link core-box" target="_blank"><div class="title">Mobile01</div></a>
         <a href="https://www.ptt.cc/bbs/index.html" class="card-link core-box" target="_blank"><div class="title">PTT</div></a>
         <a href="https://dcard.tw" class="card-link core-box" target="_blank"><div class="title">Dcard</div></a>
-        <a href="https://www.gamer.com.tw/" class="card-link core-box" target="_blank"><div class="title">巴哈姆特</div></a>		
-        <a href="https://github.com/runsen01/myhome" class="card-link core-box" target="_blank"><div class="title">github</div></a>	
-        <a href="https://world.taobao.com/" class="card-link core-box" target="_blank"><div class="title">淘寶網</div></a>	 
-        <a href="https://shopee.tw/" class="card-link core-box" target="_blank"><div class="title">蝦皮購物</div></a>	
-        <a href="https://24h.pchome.com.tw/" class="card-link core-box" target="_blank"><div class="title">PC 24H</div></a> 
-        <a href="https://www.momoshop.com.tw/" class="card-link core-box" target="_blank"><div class="title">MOMO購物</div></a>         
+        <a href="https://www.gamer.com.tw/" class="card-link core-box" target="_blank"><div class="title">巴哈姆特</div></a>
     </div>
 
-    <!-- 3. 新聞媒體 (紅色系) -->
-    <div class="section-title">新聞媒體</div>
+    <!-- 3. 新聞資訊 -->
+    <div class="section-title">新聞資訊</div>
     <div class="grid-links">
+        <a href="https://www.ptt.cc/bbs/Gossiping/index.html" class="card-link news-box" target="_blank"><div class="title">PTT 熱門</div></a>
+        <a href="https://news.tvbs.com.tw/" class="card-link news-box" target="_blank"><div class="title">TVBS 新聞</div></a>
         <a href="https://ltn.com.tw" class="card-link news-box" target="_blank"><div class="title">自由時報</div></a>
         <a href="https://udn.com" class="card-link news-box" target="_blank"><div class="title">聯合新聞</div></a>
+        <a href="https://www.ettoday.net/" class="card-link news-box" target="_blank"><div class="title">ETtoday</div></a>
         <a href="https://chinatimes.com" class="card-link news-box" target="_blank"><div class="title">中時新聞</div></a>
+        <a href="https://www.ctee.com.tw/" class="card-link news-box" target="_blank"><div class="title">工商時報</div></a>
+        <a href="https://money.udn.com/" class="card-link news-box" target="_blank"><div class="title">經濟日報</div></a>
         <a href="https://www.msn.com/zh-tw" class="card-link news-box" target="_blank"><div class="title">MSN新聞</div></a>
-        <a href="https://news.google.com/" class="card-link news-box" target="_blank"><div class="title">Google新聞</div></a>			
+        <a href="https://news.google.com/" class="card-link news-box" target="_blank"><div class="title">Google新聞</div></a>
     </div>
+
+    <!-- 4. 生活便利 -->
+    <div class="section-title">生活便利</div>
+    <div class="grid-links">
+        <a href="https://www.google.com.tw/maps" class="card-link life-box" target="_blank"><div class="title">Google 地圖</div></a>
+        <a href="https://www.youtube.com/?app=desktop&hl=zh-tw" class="card-link life-box" target="_blank"><div class="title">YouTube</div></a>
+        <a href="https://mail.google.com/" class="card-link life-box" target="_blank"><div class="title">Gmail</div></a>
+        <a href="https://yahoo.com" class="card-link life-box" target="_blank"><div class="title">Yahoo 奇摩</div></a>
+        <a href="https://www.facebook.com/" class="card-link life-box" target="_blank"><div class="title">Facebook</div></a>
+        <a href="https://weather.com/zh-TW/" class="card-link life-box" target="_blank"><div class="title">天氣預報</div></a>
+        <a href="https://translate.google.com.tw/" class="card-link life-box" target="_blank"><div class="title">翻譯</div></a>
+        <a href="https://line.me/zh-hant/" class="card-link life-box" target="_blank"><div class="title">LINE Web</div></a>
+        <a href="https://drive.google.com/" class="card-link life-box" target="_blank"><div class="title">GDriver</div></a>
+    </div>
+
+    <!-- 5. 其他 -->
+    <div class="section-title">其他</div>
+    <div class="grid-links">
+        <a href="https://apk.tw" class="card-link other-box" target="_blank"><div class="title">APK.TW</div></a>
+        <a href="https://www.tekqart.com/forum.php" class="card-link other-box" target="_blank"><div class="title">品技91TVG</div></a>	
+        <a href="https://www.gamer520.com/" class="card-link other-box" target="_blank"><div class="title">SWITCH520</div></a>
+        <a href="https://www.znds.com/" class="card-link other-box" target="_blank"><div class="title">ZNDS電視盒</div></a>		
+        <a href="https://www.10000txt.com/" class="card-link other-box" target="_blank"><div class="title">萬本小說</div></a>			
+        <a href="https://www01.eyny.com/" class="card-link other-box" target="_blank"><div class="title">伊莉</div></a>
+        <a href="https://github.com/runsen01/myhome" class="card-link other-box" target="_blank"><div class="title">GitHub</div></a>	
+        <a href="https://world.taobao.com/" class="card-link other-box" target="_blank"><div class="title">淘寶網</div></a>	 
+        <a href="https://shopee.tw/" class="card-link other-box" target="_blank"><div class="title">蝦皮購物</div></a>	
+        <a href="https://24h.pchome.com.tw/" class="card-link other-box" target="_blank"><div class="title">PChome 24h</div></a> 
+        <a href="https://www.momoshop.com.tw/" class="card-link other-box" target="_blank"><div class="title">MOMO購物</div></a> 
+    </div>
+</div>
+
+<script>
+    // === 翻頁時鐘腳本 ===
+    function updateFlipUnit(id, value, isInitial = false) {
+        const unit = document.getElementById(id);
+        if (!unit) return;
+
+        const nextValue = String(value).padStart(2, "0");
+        const currentValue = unit.dataset.value;
+
+        if (isInitial || !currentValue) {
+            unit.innerHTML =
+                '<div class="flip-card top"><div class="num-wrapper">' + nextValue + '</div></div>' +
+                '<div class="flip-card bottom"><div class="num-wrapper">' + nextValue + '</div></div>';
+            unit.dataset.value = nextValue;
+            return;
+        }
+
+        if (nextValue === currentValue) return;
+
+        unit.innerHTML =
+            '<div class="flip-card top next-top"><div class="num-wrapper">' + nextValue + '</div></div>' +
+            '<div class="flip-card bottom next-bottom"><div class="num-wrapper">' + nextValue + '</div></div>' +
+            '<div class="flip-card top current-top"><div class="num-wrapper">' + currentValue + '</div></div>' +
+            '<div class="flip-card bottom current-bottom"><div class="num-wrapper">' + currentValue + '</div></div>';
+
+        unit.classList.remove("flipping");
+        void unit.offsetWidth;
+        unit.classList.add("flipping");
+        unit.dataset.value = nextValue;
+
+        setTimeout(() => unit.classList.remove("flipping"), 600);
+    }
+
+    function updateFlipClock(isInitial = false) {
+        const d = new Date();
+        updateFlipUnit("clk-hr", d.getHours(), isInitial);
+        updateFlipUnit("clk-min", d.getMinutes(), isInitial);
+
+        const dateElem = document.getElementById("clk-date");
+        if (dateElem) {
+            const weeks = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            dateElem.innerText =
+                d.getFullYear() + "年" +
+                (d.getMonth() + 1) + "月" +
+                d.getDate() + "日 " + weeks[d.getDay()];
+        }
+    }
+
+    // === 天氣預報腳本 (苗栗縣頭份市) ===
+    const WEATHER_LAT = 24.6908;
+    const WEATHER_LON = 120.9076;
+    const weatherWeekNames = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
+
+    function weatherDateText(dateString) {
+        const d = new Date(dateString + "T00:00:00");
+        return (d.getMonth() + 1) + "/" + d.getDate();
+    }
+
+    function weatherWeekText(dateString) {
+        const d = new Date(dateString + "T00:00:00");
+        return weatherWeekNames[d.getDay()];
+    }
+
+    async function updateWeather() {
+        const url =
+            "https://api.open-meteo.com/v1/forecast" +
+            "?latitude=" + WEATHER_LAT +
+            "&longitude=" + WEATHER_LON +
+            "&daily=precipitation_probability_max,temperature_2m_min,temperature_2m_max" +
+            "&timezone=Asia%2FTaipei" +
+            "&forecast_days=7";
+
+        try {
+            const response = await fetch(url, { cache: "no-store" });
+            if (!response.ok) throw new Error("Weather API Error");
+
+            const data = await response.json();
+            if (!data.daily || !data.daily.time) throw new Error("Format Error");
+
+            const dateRow = document.getElementById("weather-date");
+            const weekRow = document.getElementById("weather-week");
+            const rainRow = document.getElementById("weather-rain");
+            const tempRow = document.getElementById("weather-temp");
+
+            dateRow.innerHTML = "<td>日期</td>";
+            weekRow.innerHTML = "<td>周</td>";
+            rainRow.innerHTML = "<td>降雨</td>";
+            tempRow.innerHTML = "<td>氣溫</td>";
+
+            for (let i = 0; i < 7; i++) {
+                const date = data.daily.time[i];
+                const rain = data.daily.precipitation_probability_max[i];
+                const minTemp = data.daily.temperature_2m_min[i];
+                const maxTemp = data.daily.temperature_2m_max[i];
+
+                const dateCell = document.createElement("td");
+                dateCell.textContent = weatherDateText(date);
+
+                const weekCell = document.createElement("td");
+                weekCell.textContent = weatherWeekText(date);
+
+                const rainCell = document.createElement("td");
+                rainCell.className = "text-rain";
+                rainCell.textContent = (rain === null || rain === undefined ? "--" : rain + "%");
+
+                const tempCell = document.createElement("td");
+                tempCell.className = "text-temp";
+                tempCell.textContent =
+                    (minTemp === null || minTemp === undefined ? "--" : Math.round(minTemp)) +
+                    "°-" +
+                    (maxTemp === null || maxTemp === undefined ? "--" : Math.round(maxTemp)) +
+                    "°";
+
+                dateRow.appendChild(dateCell);
+                weekRow.appendChild(weekCell);
+                rainRow.appendChild(rainCell);
+                tempRow.appendChild(tempCell);
+            }
+        } catch (error) {
+            console.error("天氣更新失敗：", error);
+            document.getElementById("weather-rain").innerHTML = '<td>降雨</td><td colspan="7" class="text-rain">暫時無法取得</td>';
+            document.getElementById("weather-temp").innerHTML = '<td>氣溫</td><td colspan="7" class="text-temp">請檢查網路</td>';
+        }
+    }
+
+    // Google AI 搜尋綁定
+    document.getElementById("google-ai-search").addEventListener("click", function () {
+        const q = document.getElementById("google-search-input").value.trim();
+        const url = "https://www.google.com/search?udm=50&q=" + encodeURIComponent(q);
+        window.open(url, "_blank");
+    });
+
+    // 初始化與定時器
+    updateWeather();
+    updateFlipClock(true);
+    setInterval(() => updateFlipClock(false), 1000);
+</script>
+
+</body>
+</html>
