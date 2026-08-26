@@ -70,7 +70,6 @@ body::before {
     z-index: 2;
 }
 
-/* 星空畫布：範圍精確限制在 .container 內 */
 #star-canvas {
     position: absolute;
     top: 0;
@@ -148,6 +147,7 @@ body::before {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    justify-content: center;
     flex: 0 0 auto;
     margin-right: 28px;
 }
@@ -155,6 +155,7 @@ body::before {
 .htc-clock {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 16px;
     margin-bottom: 6px;
 }
@@ -240,16 +241,20 @@ body::before {
     -webkit-backface-visibility: hidden;
 }
 
+/* ★關鍵修正：加上 translateY(11%) 將數字精準下移至中間位置 */
+/* 精確微調：平移 4.5% 即可讓數字完美垂直置中 */
 .flip-card .num-wrapper {
     position: absolute;
     left: 0;
+    top: 0;
     width: 100%;
     height: 108px;
     display: flex;
     justify-content: center;
     align-items: center;
+    line-height: 108px;
     letter-spacing: 6px;
-    transform: scaleX(0.82) scaleY(1.05);
+    transform: scaleX(0.82) scaleY(1.05) translateY(4.5%);
 }
 
 .flip-card.top {
@@ -266,7 +271,7 @@ body::before {
     box-shadow: inset 0 3px 5px rgba(0,0,0,0.85), inset 0 -1px 1px rgba(255,255,255,0.08);
 }
 
-.flip-card.bottom .num-wrapper { bottom: 0; }
+.flip-card.bottom .num-wrapper { top: -54px; }
 
 .flip-card.next-bottom {
     top: 50%;
@@ -301,6 +306,8 @@ body::before {
     font-weight: 900;
     color: #dce5e8;
     margin: 0 2px;
+    display: flex;
+    align-items: center;
     text-shadow: 0 1px 2px #000, 0 0 5px rgba(0,243,255,0.35);
     animation: blink 1s infinite;
 }
@@ -313,6 +320,9 @@ body::before {
     font-weight: 700;
     text-shadow: 0 0 5px rgba(0,243,255,0.45), 0 1px 2px #000;
     padding-left: 2px;
+    display: flex;
+    align-items: center;
+    line-height: 1.2;
 }
 
 
@@ -366,7 +376,7 @@ body::before {
 
 
 /* =========================================================
-   Google 搜尋列 (長度縮減至 1/2，含 AI 搜尋按鈕)
+   Google 搜尋列
    ========================================================= */
 
 .google-search-wrapper {
@@ -383,9 +393,8 @@ body::before {
     width: 100%;
 }
 
-/* 1/2 長度的輸入框容器 */
 .search-input-box {
-    flex: 0 1 50%; /* 寬度減半 */
+    flex: 0 1 50%;
     min-width: 200px;
     display: flex;
     align-items: center;
@@ -417,10 +426,10 @@ body::before {
     color: #888888;
 }
 
-/* 普通搜尋按鈕 */
+/* 1. 普通搜尋按鈕 */
 .search-btn {
     height: 44px;
-    padding: 0 20px;
+    padding: 0 16px;
     border-radius: 10px;
     border: 1px solid #0055aa;
     background: rgba(2, 14, 38, 0.8);
@@ -451,10 +460,35 @@ body::before {
     stroke-linejoin: round;
 }
 
-/* AI 搜尋按鈕 */
-.ai-search-btn {
+/* 2. ChatGPT 按鈕 */
+.chatgpt-search-btn {
     height: 44px;
-    padding: 0 20px;
+    padding: 0 16px;
+    border-radius: 10px;
+    border: 1px solid #10a37f;
+    background: linear-gradient(135deg, rgba(6, 78, 59, 0.8) 0%, rgba(16, 163, 127, 0.8) 100%);
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    box-shadow: 0 0 6px rgba(16, 163, 127, 0.2);
+}
+
+.chatgpt-search-btn:hover {
+    background: linear-gradient(135deg, rgba(16, 163, 127, 0.9) 0%, rgba(20, 184, 144, 0.9) 100%);
+    border-color: #34d399;
+    box-shadow: 0 0 12px rgba(16, 163, 127, 0.5);
+}
+
+/* 3. Gemini 按鈕 */
+.gemini-search-btn {
+    height: 44px;
+    padding: 0 16px;
     border-radius: 10px;
     border: 1px solid #7e22ce;
     background: linear-gradient(135deg, rgba(46, 16, 101, 0.8) 0%, rgba(88, 28, 135, 0.8) 100%);
@@ -470,7 +504,7 @@ body::before {
     box-shadow: 0 0 6px rgba(168, 85, 247, 0.2);
 }
 
-.ai-search-btn:hover {
+.gemini-search-btn:hover {
     background: linear-gradient(135deg, rgba(88, 28, 135, 0.9) 0%, rgba(126, 34, 206, 0.9) 100%);
     border-color: #a855f7;
     box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
@@ -611,7 +645,8 @@ body::before {
 @media (max-width: 520px) {
     .flip-clock-unit { width: 96px; height: 94px; }
     .flip-card { font-size: 5.4rem; }
-    .flip-card .num-wrapper { height: 94px; letter-spacing: 4px; }
+    .flip-card .num-wrapper { height: 94px; line-height: 94px; letter-spacing: 4px; }
+    .flip-card.bottom .num-wrapper { top: -47px; }
     .flip-colon { font-size: 3.2rem; }
     .weather-table { font-size: 0.68rem; }
     .weather-table td:first-child { width: 34px; padding-left: 2px; }
@@ -624,13 +659,11 @@ body::before {
 <body>
 
 <div class="container">
-    <!-- 限定在 .container 寬度範圍內的動態星空畫布 -->
     <canvas id="star-canvas"></canvas>
 
     <!-- 頂部控制面板 -->
     <div class="dashboard-wrapper">
         <div class="htc-dashboard">
-            <!-- 左側：時間與日期 -->
             <div class="clock-section">
                 <div class="htc-clock">
                     <div class="flip-clock-unit" id="clk-hr"></div>
@@ -640,7 +673,6 @@ body::before {
                 <div class="htc-date" id="clk-date">讀取中...</div>
             </div>
 
-            <!-- 右側：位置與氣象表 -->
             <div class="weather-section">
                 <div class="weather-title">苗栗縣頭份市 // 天氣預報</div>
                 <table class="weather-table" id="weather-table">
@@ -653,7 +685,7 @@ body::before {
         </div>
     </div>
 
-    <!-- Google 搜尋列與 AI 搜尋按鈕 -->
+    <!-- Google 搜尋列與 AI 按鈕 -->
     <div class="google-search-wrapper">
         <form class="google-search" action="https://www.google.com/search" method="get" target="_blank" id="search-form">
             <div class="search-input-box">
@@ -669,8 +701,11 @@ body::before {
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 搜尋
             </button>
-            <button type="button" class="ai-search-btn" onclick="performAISearch()">
-                ✦ AI 搜尋
+            <button type="button" class="chatgpt-search-btn" onclick="performChatGPTSearch()">
+                ✦ ChatGPT
+            </button>
+            <button type="button" class="gemini-search-btn" onclick="performGeminiSearch()">
+                ✦ Gemini
             </button>
         </form>
     </div>
@@ -692,18 +727,21 @@ body::before {
     <div class="section-title">常用網站</div>
     <div class="grid-links">
         <a href="https://google.com" class="card-link core-box" target="_blank"><div class="title">Google</div></a>
-        <a href="https://chatgpt.com/zh-TW/" class="card-link core-box" target="_blank"><div class="title">ChatGPT</div></a>		
-        <a href="https://gemini.google.com/app?hl=zh-TW" class="card-link core-box" target="_blank"><div class="title">Gemini</div></a>	
+        <a href="https://tw.yahoo.com" class="card-link core-box" target="_blank"><div class="title">Yahoo 奇摩</div></a>
         <a href="https://mobile01.com" class="card-link core-box" target="_blank"><div class="title">Mobile01</div></a>
-        <a href="https://www.ptt.cc/bbs/index.html" class="card-link core-box" target="_blank"><div class="title">PTT</div></a>
-        <a href="https://dcard.tw" class="card-link core-box" target="_blank"><div class="title">Dcard</div></a>
-        <a href="https://www.gamer.com.tw/" class="card-link core-box" target="_blank"><div class="title">巴哈姆特</div></a>
+        <a href="https://apk.tw" class="card-link core-box" target="_blank"><div class="title">APK.TW</div></a>
+        <a href="https://www.tekqart.com/forum.php" class="card-link core-box" target="_blank"><div class="title">品技91TVG</div></a>	
+        <a href="https://www.znds.com/" class="card-link core-box" target="_blank"><div class="title">ZNDS電視盒</div></a>		
+        <a href="https://www01.eyny.com/" class="card-link core-box" target="_blank"><div class="title">伊莉</div></a>
+        <a href="https://www.gamer520.com/" class="card-link core-box" target="_blank"><div class="title">SWITCH520</div></a>
+        <a href="https://github.com/runsen01/myhome" class="card-link core-box" target="_blank"><div class="title">GitHub</div></a>		
+	    <a href="https://translate.google.com.tw/" class="card-link core-box" target="_blank"><div class="title">翻譯</div></a>
+		
     </div>
 
     <!-- 3. 新聞資訊 -->
     <div class="section-title">新聞資訊</div>
     <div class="grid-links">
-        <a href="https://www.ptt.cc/bbs/Gossiping/index.html" class="card-link news-box" target="_blank"><div class="title">PTT 熱門</div></a>
         <a href="https://news.tvbs.com.tw/" class="card-link news-box" target="_blank"><div class="title">TVBS 新聞</div></a>
         <a href="https://ltn.com.tw" class="card-link news-box" target="_blank"><div class="title">自由時報</div></a>
         <a href="https://udn.com" class="card-link news-box" target="_blank"><div class="title">聯合新聞</div></a>
@@ -718,25 +756,23 @@ body::before {
     <!-- 4. 生活便利 -->
     <div class="section-title">生活便利</div>
     <div class="grid-links">
+        <a href="https://chatgpt.com/zh-TW/" class="card-link life-box" target="_blank"><div class="title">ChatGPT</div></a>		
+        <a href="https://gemini.google.com/app?hl=zh-TW" class="card-link life-box" target="_blank"><div class="title">Gemini</div></a>	
         <a href="https://www.google.com.tw/maps" class="card-link life-box" target="_blank"><div class="title">Google地圖</div></a>
         <a href="https://www.youtube.com/" class="card-link life-box" target="_blank"><div class="title">YouTube</div></a>
         <a href="https://mail.google.com/" class="card-link life-box" target="_blank"><div class="title">Gmail</div></a>
-        <a href="https://tw.yahoo.com" class="card-link life-box" target="_blank"><div class="title">Yahoo 奇摩</div></a>
+        <a href="https://drive.google.com/" class="card-link life-box" target="_blank"><div class="title">GDriver</div></a>
         <a href="https://www.facebook.com/" class="card-link life-box" target="_blank"><div class="title">Facebook</div></a>
         <a href="https://weather.com/zh-TW/" class="card-link life-box" target="_blank"><div class="title">天氣預報</div></a>
-        <a href="https://translate.google.com.tw/" class="card-link life-box" target="_blank"><div class="title">翻譯</div></a>
-        <a href="https://drive.google.com/" class="card-link life-box" target="_blank"><div class="title">GDriver</div></a>
+
     </div>
 
     <!-- 5. 其他 -->
     <div class="section-title">其他</div>
     <div class="grid-links">
-        <a href="https://apk.tw" class="card-link other-box" target="_blank"><div class="title">APK.TW</div></a>
-        <a href="https://www.tekqart.com/forum.php" class="card-link other-box" target="_blank"><div class="title">品技91TVG</div></a>	
-        <a href="https://www.gamer520.com/" class="card-link other-box" target="_blank"><div class="title">SWITCH520</div></a>
-        <a href="https://www.znds.com/" class="card-link other-box" target="_blank"><div class="title">ZNDS電視盒</div></a>		
-        <a href="https://www01.eyny.com/" class="card-link other-box" target="_blank"><div class="title">伊莉</div></a>
-        <a href="https://github.com/runsen01/myhome" class="card-link other-box" target="_blank"><div class="title">GitHub</div></a>	
+        <a href="https://www.ptt.cc/bbs/index.html" class="card-link other-box" target="_blank"><div class="title">PTT</div></a>
+        <a href="https://dcard.tw" class="card-link other-box" target="_blank"><div class="title">Dcard</div></a>
+        <a href="https://www.gamer.com.tw/" class="card-link other-box" target="_blank"><div class="title">巴哈姆特</div></a>	
         <a href="https://world.taobao.com/" class="card-link other-box" target="_blank"><div class="title">淘寶網</div></a>	 
         <a href="https://shopee.tw/" class="card-link other-box" target="_blank"><div class="title">蝦皮購物</div></a>	
         <a href="https://24h.pchome.com.tw/" class="card-link other-box" target="_blank"><div class="title">PChome 24h</div></a> 
@@ -745,13 +781,25 @@ body::before {
 </div>
 
 <script>
-    // === AI 搜尋按鈕跳轉邏輯 ===
-    function performAISearch() {
+    function performChatGPTSearch() {
         const query = document.getElementById("google-search-input").value;
         if (query) {
             window.open("https://chatgpt.com/?q=" + encodeURIComponent(query), "_blank");
         } else {
             window.open("https://chatgpt.com/", "_blank");
+        }
+    }
+
+    /* ★修正 Gemini 按鈕邏輯：自動複製關鍵字並開啟 Gemini 頁面 */
+    function performGeminiSearch() {
+        const query = document.getElementById("google-search-input").value;
+        if (query) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(query);
+            }
+            window.open("https://gemini.google.com/app?hl=zh-TW", "_blank");
+        } else {
+            window.open("https://gemini.google.com/app?hl=zh-TW", "_blank");
         }
     }
 
@@ -769,7 +817,6 @@ body::before {
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // 背景星星
         const numStars = 60;
         const stars = Array.from({ length: numStars }, () => ({
             x: Math.random() * canvas.width,
@@ -780,27 +827,25 @@ body::before {
             twinkleDirection: Math.random() > 0.5 ? 1 : -1
         }));
 
-        // 擬真流星
         let meteor = null;
 
         function spawnMeteor() {
             if (!meteor && Math.random() < 0.012) {
-                // 從右上區域生成，往左下劃過
-                const startX = Math.random() * (canvas.width * 0.6) + canvas.width * 0.4;
-                const startY = Math.random() * (canvas.height * 0.2);
-                const angle = Math.PI * 0.8; // 約 144 度斜角
+                const startX = Math.random() * (canvas.width * 0.66);
+                const startY = Math.random() * (canvas.height * 0.66);
+                const angle = Math.PI * 0.8;
 
                 meteor = {
                     x: startX,
                     y: startY,
-                    length: Math.random() * 120 + 150, // 彗尾長度
-                    speed: Math.random() * 10 + 12,    // 飛馳速度
+                    length: Math.random() * 120 + 150,
+                    speed: Math.random() * 3 + 4,
                     angle: angle,
                     dx: Math.cos(angle),
                     dy: Math.sin(angle),
                     alpha: 1,
                     life: 0,
-                    maxLife: 45
+                    maxLife: 150
                 };
             }
         }
@@ -810,14 +855,12 @@ body::before {
             ctx.translate(m.x, m.y);
             ctx.rotate(m.angle);
 
-            // 擬真流星漸層尾巴 (金黃到亮白，後端漸隱)
             const grad = ctx.createLinearGradient(0, 0, -m.length, 0);
             grad.addColorStop(0, `rgba(255, 255, 255, ${m.alpha})`);
             grad.addColorStop(0.1, `rgba(255, 215, 130, ${m.alpha * 0.9})`);
             grad.addColorStop(0.4, `rgba(235, 120, 30, ${m.alpha * 0.5})`);
             grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
-            // 繪製錐形彗尾
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(-m.length, -2);
@@ -826,7 +869,6 @@ body::before {
             ctx.fillStyle = grad;
             ctx.fill();
 
-            // 流星頭部亮核 (白光輝光)
             ctx.beginPath();
             ctx.arc(0, 0, 3, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(255, 255, 255, ${m.alpha})`;
@@ -840,7 +882,6 @@ body::before {
         function render() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 繪製背景閃爍星星
             stars.forEach(s => {
                 s.alpha += s.twinkleSpeed * s.twinkleDirection;
                 if (s.alpha >= 1) { s.alpha = 1; s.twinkleDirection = -1; }
@@ -858,7 +899,6 @@ body::before {
                 ctx.restore();
             });
 
-            // 生成與更新擬真流星
             spawnMeteor();
             if (meteor) {
                 drawMeteor(meteor);
@@ -868,7 +908,7 @@ body::before {
                 meteor.life++;
 
                 if (meteor.life > meteor.maxLife * 0.6) {
-                    meteor.alpha -= 0.05;
+                    meteor.alpha -= 0.015;
                 }
 
                 if (meteor.alpha <= 0 || meteor.x < 0 || meteor.y > canvas.height) {
@@ -1006,11 +1046,20 @@ body::before {
         }
     }
 
-    // 初始化與定時器
     updateWeather();
     updateFlipClock(true);
     setInterval(() => updateFlipClock(false), 1000);
     setInterval(updateWeather, 1800000);
+
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+            updateFlipClock(true);
+        }
+    });
+
+    window.addEventListener("pageshow", (event) => {
+        updateFlipClock(true);
+    });
 </script>
 
 </body>
