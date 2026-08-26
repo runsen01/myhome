@@ -629,8 +629,12 @@ body::before {
 }
 
 
-/* 手機版響應式 */
-@media (max-width: 760px) {
+/* =========================================================
+   手機與平板響應式設定 (Media Queries)
+   ========================================================= */
+
+/* 手機平板版 (521px ~ 760px) */
+@media (max-width: 760px) and (min-width: 521px) {
     body { padding: 10px; }
     .htc-dashboard { flex-direction: column; align-items: stretch; padding: 14px; }
     .clock-section { flex: 0 0 auto; width: 100%; align-items: center; margin-right: 0; margin-bottom: 15px; }
@@ -638,11 +642,19 @@ body::before {
     .weather-section { width: 100%; }
     .weather-title { align-self: center; }
     .search-input-box { flex: 1 1 auto; }
-    .grid-links { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid-links { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
     .card-link .title { font-size: 0.82rem; }
 }
 
+/* 超小螢幕手機版 (520px 以下) */
 @media (max-width: 520px) {
+    body { padding: 8px; }
+    .htc-dashboard { flex-direction: column; align-items: stretch; padding: 12px; }
+    .clock-section { flex: 0 0 auto; width: 100%; align-items: center; margin-right: 0; margin-bottom: 12px; }
+    .htc-clock { justify-content: center; }
+    .weather-section { width: 100%; }
+    .weather-title { align-self: center; }
+
     .flip-clock-unit { width: 96px; height: 94px; }
     .flip-card { font-size: 5.4rem; }
     .flip-card .num-wrapper { height: 94px; line-height: 94px; letter-spacing: 4px; }
@@ -652,7 +664,21 @@ body::before {
     .weather-table td:first-child { width: 34px; padding-left: 2px; }
     .google-search { flex-wrap: wrap; }
     .search-input-box { flex: 1 0 100%; }
-    .grid-links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    /* 強制設定 3 欄並縮減間距與字型，防止擠壓 */
+    .grid-links { 
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important; 
+        gap: 5px !important;
+    }
+    .card-link {
+        padding: 6px 1px !important;
+        min-height: 38px !important;
+    }
+    .card-link .title { 
+        font-size: 0.75rem !important; 
+        letter-spacing: 0px !important;
+        padding: 0 2px !important;
+    }
 }
     </style>
 </head>
@@ -736,7 +762,6 @@ body::before {
         <a href="https://www.gamer520.com/" class="card-link core-box" target="_blank"><div class="title">SWITCH520</div></a>
         <a href="https://github.com/runsen01/myhome" class="card-link core-box" target="_blank"><div class="title">GitHub</div></a>		
 	    <a href="https://translate.google.com.tw/" class="card-link core-box" target="_blank"><div class="title">翻譯</div></a>
-		
     </div>
 
     <!-- 3. 新聞資訊 -->
@@ -764,7 +789,6 @@ body::before {
         <a href="https://drive.google.com/" class="card-link life-box" target="_blank"><div class="title">GDriver</div></a>
         <a href="https://www.facebook.com/" class="card-link life-box" target="_blank"><div class="title">Facebook</div></a>
         <a href="https://weather.com/zh-TW/" class="card-link life-box" target="_blank"><div class="title">天氣預報</div></a>
-
     </div>
 
     <!-- 5. 其他 -->
@@ -790,7 +814,7 @@ body::before {
         }
     }
 
-    /* ★修正 Gemini 按鈕邏輯：自動複製關鍵字並開啟 Gemini 頁面 */
+    /* 自動複製關鍵字並開啟 Gemini 頁面 */
     function performGeminiSearch() {
         const query = document.getElementById("google-search-input").value;
         if (query) {
